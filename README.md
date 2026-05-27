@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # PCS Playbook: From Orders to Check-In
 
 PCS Playbook is a full-stack web application for Marines completing a Permanent Change of Station move. The system lets users browse Marine Corps installations, view entry requirements and unit contact information, request mentors, and manage installation/profile images through AWS S3.
@@ -50,4 +49,3 @@ The frontend also includes demo installation data so the pages still display eve
 =======
 # PCS-Playbook
 Capstone Project on PCS Playbook
->>>>>>> d9fe24fa4f22f27e8aed1b58e4b3c0eebc49475e
