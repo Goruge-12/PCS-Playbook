@@ -9,7 +9,10 @@ exports.getUnitsByInstallation = async (req, res) => {
 
     res.json(rows);
   } catch (error) {
-    res.status(500).json({ message: 'Server error.', error: error.message });
+    res.status(500).json({
+      message: 'Server error.',
+      error: error.message
+    });
   }
 };
 
@@ -28,7 +31,10 @@ exports.searchUnits = async (req, res) => {
 
     res.json(rows);
   } catch (error) {
-    res.status(500).json({ message: 'Server error.', error: error.message });
+    res.status(500).json({
+      message: 'Server error.',
+      error: error.message
+    });
   }
 };
 
@@ -52,6 +58,79 @@ exports.getUnitById = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: 'Server error.',
+      error: error.message
+    });
+  }
+};
+
+exports.createUnit = async (req, res) => {
+  try {
+    const {
+      installation_id,
+      unit_name,
+      unit_type,
+      unit_description,
+      contact_info,
+      odo_phone,
+      aircraft_tms,
+      unit_logo_url
+    } = req.body;
+
+    await pool.query(
+      `INSERT INTO installation_units (
+        installation_id,
+        unit_name,
+        unit_type,
+        unit_description,
+        contact_info,
+        odo_phone,
+        aircraft_tms,
+        unit_logo_url
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        installation_id,
+        unit_name,
+        unit_type,
+        unit_description,
+        contact_info,
+        odo_phone,
+        aircraft_tms,
+        unit_logo_url
+      ]
+    );
+
+    res.json({
+      message: 'Unit added successfully.'
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message: 'Failed to create unit.',
+      error: error.message
+    });
+  }
+};
+
+exports.deleteUnit = async (req, res) => {
+  try {
+    const { unitId } = req.params;
+
+    await pool.query(
+      `DELETE FROM installation_units
+       WHERE unit_id = ?`,
+      [unitId]
+    );
+
+    res.json({
+      message: 'Unit removed successfully.'
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message: 'Failed to remove unit.',
       error: error.message
     });
   }

@@ -68,12 +68,19 @@ function AdminDashboard() {
             Manage Users
           </Link>
 
-          <Link className="button" to="/admin/content">
-            Manage Content
-          </Link>
 
+<Link className="button" to="/admin/modify-installations">
+  Modify Installations
+</Link>
+
+<Link className="button" to="/admin/modify-units">
+  Modify Units
+</Link>
          <Link className="button" to="/admin/installations">
   Add / Remove Installations
+</Link>
+<Link className="button" to="/admin/units">
+  Add / Remove Units
 </Link>
         </div>
       </div>

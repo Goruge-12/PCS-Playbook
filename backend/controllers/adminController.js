@@ -223,11 +223,16 @@ exports.getMentors = async (req, res) => {
 };
 exports.updateInstallation = async (req, res) => {
   try {
+
     const {
       installation_name,
+      slug,
+      region_name,
       state,
       zip_code,
       address,
+      image_url,
+      gate_image_url,
       base_entry_requirements,
       general_information,
       unit_contact_info
@@ -236,18 +241,26 @@ exports.updateInstallation = async (req, res) => {
     await pool.query(
       `UPDATE installations
        SET installation_name = ?,
+           slug = ?,
+           region_name = ?,
            state = ?,
            zip_code = ?,
            address = ?,
+           image_url = ?,
+           gate_image_url = ?,
            base_entry_requirements = ?,
            general_information = ?,
            unit_contact_info = ?
        WHERE installation_id = ?`,
       [
         installation_name,
+        slug,
+        region_name,
         state,
         zip_code,
         address,
+        image_url,
+        gate_image_url,
         base_entry_requirements,
         general_information,
         unit_contact_info,
@@ -260,13 +273,15 @@ exports.updateInstallation = async (req, res) => {
     });
 
   } catch (error) {
+
+    console.log(error);
+
     res.status(500).json({
       message: 'Server error.',
       error: error.message
     });
   }
 };
-
 exports.updateUnit = async (req, res) => {
   try {
     const {

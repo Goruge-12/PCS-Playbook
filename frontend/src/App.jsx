@@ -19,13 +19,16 @@ import MentorDashboard from './pages/MentorDashboard.jsx';
 
 import AdminDashboard from './pages/AdminDashboard.jsx';
 import AdminUsers from './pages/AdminUsers.jsx';
-import AdminContent from './pages/AdminContent.jsx';
 
 import Unauthorized from './pages/Unauthorized.jsx';
 
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 
 import AddRemoveInstallations from './pages/AddRemoveInstallations.jsx';
+
+import AddRemoveUnits from './pages/AddRemoveUnits.jsx';
+import ModifyInstallations from './pages/ModifyInstallations.jsx';
+import ModifyUnits from './pages/ModifyUnits.jsx';
 
 function App() {
   return (
@@ -90,15 +93,6 @@ function App() {
           />
 
           <Route
-            path="/admin/content"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <AdminContent />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
             path="/mentor-dashboard"
             element={
               <ProtectedRoute allowedRoles={['mentor']}>
@@ -132,7 +126,31 @@ function App() {
     </ProtectedRoute>
   }
 />
+<Route
+  path="/admin/units"
+  element={
+    <ProtectedRoute allowedRoles={['admin']}>
+      <AddRemoveUnits />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/admin/modify-installations"
+  element={
+    <ProtectedRoute allowedRoles={['admin']}>
+      <ModifyInstallations />
+    </ProtectedRoute>
+  }
+/>
 
+<Route
+  path="/admin/modify-units"
+  element={
+    <ProtectedRoute allowedRoles={['admin']}>
+      <ModifyUnits />
+    </ProtectedRoute>
+  }
+/>
         </Routes>
       </main>
 

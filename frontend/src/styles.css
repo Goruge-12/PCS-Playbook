@@ -930,3 +930,151 @@ footer {
   width: 100%;
   margin-bottom: 0.75rem;
 }
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.input-group label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: left;
+  padding-left: 0.25rem;
+}
+
+.centered-label {
+  text-align: center !important;
+  padding-left: 0 !important;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-card.wide {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+}
+
+.section-title {
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+}
+
+/* MAIN GRID */
+
+.admin-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* INSTALLATION IMAGE ROW */
+
+.admin-image-row {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 1rem;
+}
+
+/* UNIT LOGO ROW */
+
+.unit-logo-row {
+  display: grid;
+  grid-template-columns: 1fr 260px 220px;
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 2rem;
+}
+
+/* COMMAND STAFF ROW */
+
+.staff-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 260px 180px;
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 2rem;
+}
+
+/* PREVIEW BOXES */
+
+.unit-logo-preview-box,
+.staff-preview-box {
+  height: 120px;
+  border: 1px solid #ddd;
+  border-radius: 14px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  padding: 0.5rem;
+}
+
+/* IMAGE PREVIEWS */
+
+.unit-logo-preview-img,
+.staff-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* GENERAL PREVIEW */
+
+.preview-container {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0 2rem 0;
+}
+
+.admin-preview-img {
+  width: 100%;
+  max-width: 450px;
+
+  max-height: 320px;
+  height: auto;
+
+  object-fit: contain;
+
+  border-radius: 14px;
+
+  background: #111;
+
+  padding: 0.5rem;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  display: block;
+
+  margin: 0 auto;
+}
+/* EMPTY PLACEHOLDER */
+
+.preview-placeholder {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+/* MOBILE RESPONSIVE */
+
+@media (max-width: 992px) {
+  .admin-form-grid,
+  .admin-image-row,
+  .unit-logo-row,
+  .staff-row {
+    grid-template-columns: 1fr;
+  }
+
+  .unit-logo-preview-box,
+  .staff-preview-box {
+    width: 100%;
+  }
+}
