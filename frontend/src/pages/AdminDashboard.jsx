@@ -99,6 +99,10 @@ function AdminDashboard() {
           <Link className="button" to="/admin/units">
             Add / Remove Units
           </Link>
+
+          <Link className="button" to="/admin/city-info">
+  Manage City Info
+</Link>
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-// src/pages/UnitDetails.js
+// src/pages/UnitDetails.jsx
 
 import { useEffect, useState } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
@@ -21,6 +21,17 @@ function UnitDetails() {
 
   return (
     <section className="unit-details-page">
+      <Link
+        className="button ghost"
+        to={backLink}
+        style={{
+          marginBottom: "1rem",
+          display: "inline-block"
+        }}
+      >
+        Back
+      </Link>
+
       <div className="card unit-detail-card">
         <h2>{unit.unit_name}</h2>
 
@@ -29,6 +40,9 @@ function UnitDetails() {
             className="unit-logo-large"
             src={unit.unit_logo_url}
             alt={`${unit.unit_name} logo`}
+            style={{
+              objectFit: "contain"
+            }}
           />
         )}
 
@@ -71,6 +85,10 @@ function UnitDetails() {
                 className="command-img"
                 src={unit.commanding_officer_image_url}
                 alt="Commanding Officer"
+                style={{
+                  objectFit: "contain",
+                  background: "#fff"
+                }}
               />
             ) : (
               <div className="command-img-placeholder">
@@ -88,6 +106,10 @@ function UnitDetails() {
                 className="command-img"
                 src={unit.executive_officer_image_url}
                 alt="Executive Officer"
+                style={{
+                  objectFit: "contain",
+                  background: "#fff"
+                }}
               />
             ) : (
               <div className="command-img-placeholder">
@@ -105,6 +127,10 @@ function UnitDetails() {
                 className="command-img"
                 src={unit.senior_enlisted_advisor_image_url}
                 alt="Senior Enlisted Advisor"
+                style={{
+                  objectFit: "contain",
+                  background: "#fff"
+                }}
               />
             ) : (
               <div className="command-img-placeholder">
@@ -125,12 +151,6 @@ function UnitDetails() {
           {unit.command_info ||
             "Command information is currently being updated. This section will include the unit command structure, leadership notes, and general reporting information."}
         </p>
-      </div>
-
-      <div className="card">
-        <Link className="button ghost" to={backLink}>
-          Go Back
-        </Link>
       </div>
     </section>
   );

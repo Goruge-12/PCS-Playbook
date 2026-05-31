@@ -30,6 +30,8 @@ import AddRemoveUnits from './pages/AddRemoveUnits.jsx';
 import ModifyInstallations from './pages/ModifyInstallations.jsx';
 import ModifyUnits from './pages/ModifyUnits.jsx';
 
+import ManageCityInfo from './pages/ManageCityInfo.jsx';
+
 function App() {
   return (
     <>
@@ -143,6 +145,14 @@ function App() {
   element={
     <ProtectedRoute allowedRoles={['admin']}>
       <ModifyUnits />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/admin/city-info"
+  element={
+    <ProtectedRoute allowedRoles={['admin']}>
+      <ManageCityInfo />
     </ProtectedRoute>
   }
 />

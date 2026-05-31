@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import api from "../services/api";
 
 function Units() {
   const [units, setUnits] = useState([]);
-  const [openInstallation, setOpenInstallation] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const savedInstallation = searchParams.get("installation") || "";
+  const [openInstallation, setOpenInstallation] =
+    useState(savedInstallation);
 
   useEffect(() => {
     api
@@ -26,6 +30,16 @@ function Units() {
 
   const installationNames = Object.keys(groupedUnits).sort();
 
+  function handleInstallationChange(value) {
+    setOpenInstallation(value);
+
+    if (value) {
+      setSearchParams({ installation: value });
+    } else {
+      setSearchParams({});
+    }
+  }
+
   return (
     <section className="units-page">
       <div
@@ -35,6 +49,7 @@ function Units() {
         }}
       >
         <h2>All Units</h2>
+
         <p className="muted">
           Browse Marine Corps units by installation or parent command.
         </p>
@@ -59,7 +74,7 @@ function Units() {
 
         <select
           value={openInstallation}
-          onChange={(e) => setOpenInstallation(e.target.value)}
+          onChange={(e) => handleInstallationChange(e.target.value)}
           style={{
             width: "100%"
           }}
@@ -74,7 +89,7 @@ function Units() {
         </select>
       </div>
 
-      {openInstallation && (
+      {openInstallation && groupedUnits[openInstallation] && (
         <div className="card">
           <h3 style={{ textAlign: "center" }}>
             {openInstallation}
@@ -84,7 +99,11 @@ function Units() {
             {groupedUnits[openInstallation].map((unit) => (
               <Link
                 to={`/units/${unit.unit_id}`}
-                state={{ from: "/units" }}
+                state={{
+                  from: `/units?installation=${encodeURIComponent(
+                    openInstallation
+                  )}`
+                }}
                 className="unit-tile"
                 key={unit.unit_id}
               >

@@ -21,6 +21,7 @@ app.use('/api/units', require('./routes/unitRoutes'));
 app.use('/api/mentor-requests', require('./routes/mentorRequestRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/admin/upload', require('./routes/uploadRoutes'));
+app.use('/api/city-info', require('./routes/cityInfoRoutes'));
 
 const PORT = process.env.PORT || 5000;
 
