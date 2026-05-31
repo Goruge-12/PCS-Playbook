@@ -28,6 +28,22 @@ function AdminDashboard() {
     return () => clearInterval(interval);
   }, []);
 
+  function formatStatus(status) {
+    if (!status) return '';
+
+    return (
+      status.charAt(0).toUpperCase() +
+      status.slice(1)
+    );
+  }
+
+  function getStatusColor(status) {
+    if (status === 'closed') return '#c62828';
+    if (status === 'assigned') return '#0b3d91';
+    if (status === 'replied') return '#2e7d32';
+    return 'inherit';
+  }
+
   async function updateStatus(id, status) {
     await api.put(`/admin/requests/${id}/status`, { status });
     setMessage('Request updated.');
@@ -68,20 +84,21 @@ function AdminDashboard() {
             Manage Users
           </Link>
 
+          <Link className="button" to="/admin/modify-installations">
+            Modify Installations
+          </Link>
 
-<Link className="button" to="/admin/modify-installations">
-  Modify Installations
-</Link>
+          <Link className="button" to="/admin/modify-units">
+            Modify Units
+          </Link>
 
-<Link className="button" to="/admin/modify-units">
-  Modify Units
-</Link>
-         <Link className="button" to="/admin/installations">
-  Add / Remove Installations
-</Link>
-<Link className="button" to="/admin/units">
-  Add / Remove Units
-</Link>
+          <Link className="button" to="/admin/installations">
+            Add / Remove Installations
+          </Link>
+
+          <Link className="button" to="/admin/units">
+            Add / Remove Units
+          </Link>
         </div>
       </div>
 
@@ -89,7 +106,13 @@ function AdminDashboard() {
         Mentorship Requests
       </h3>
 
-      <div className="card request-table-card">
+      <div
+        className="card request-table-card"
+        style={{
+          maxHeight: '700px',
+          overflowY: 'auto'
+        }}
+      >
         <table className="request-table">
           <thead>
             <tr>
@@ -129,7 +152,16 @@ function AdminDashboard() {
 
                     <td>{request.installation_name}</td>
 
-                    <td>{request.status}</td>
+                    <td>
+                      <span
+                        style={{
+                          fontWeight: '600',
+                          color: getStatusColor(request.status)
+                        }}
+                      >
+                        {formatStatus(request.status)}
+                      </span>
+                    </td>
 
                     <td>{request.message}</td>
 

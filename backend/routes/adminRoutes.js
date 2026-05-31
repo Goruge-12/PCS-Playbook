@@ -2,6 +2,7 @@ const router = require('express').Router();
 const adminController = require('../controllers/adminController');
 const { auth, adminOnly } = require('../middleware/auth');
 
+router.put('/users/:id', auth, adminOnly, adminController.updateUser);
 router.get('/users', auth, adminOnly, adminController.getAllUsers);
 router.put('/users/:id/role', auth, adminOnly, adminController.updateUserRole);
 router.get('/requests', auth, adminOnly, adminController.getAllRequests);
@@ -12,5 +13,6 @@ router.put('/installations/:id', auth, adminOnly, adminController.updateInstalla
 router.put('/units/:id', auth, adminOnly, adminController.updateUnit);
 router.get('/installations', auth, adminOnly, adminController.getInstallations);
 router.get('/units', auth, adminOnly, adminController.getUnits);
+
 
 module.exports = router;

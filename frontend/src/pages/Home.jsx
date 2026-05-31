@@ -103,14 +103,13 @@ function Home() {
 
       const closestBase = basesWithDistance[0];
 
-     setMessage(
-  `Closest base found: ${closestBase.installation_name} (${Math.round(
-    closestBase.distance
-  )} miles away). Click below to open.`
-);
+      setMessage(
+        `Closest base found: ${closestBase.installation_name} (${Math.round(
+          closestBase.distance
+        )} miles away). Click below to open.`
+      );
 
-setSelectedBase(String(closestBase.installation_id));
-
+      setSelectedBase(String(closestBase.installation_id));
     } catch (error) {
       setMessage("Could not find that ZIP code. Please try another one.");
     }
@@ -118,11 +117,17 @@ setSelectedBase(String(closestBase.installation_id));
 
   return (
     <section>
-      <div className="card welcome-card">
-        <h2>Welcome</h2>
+      <div
+        style={{
+          textAlign: "center",
+          marginBottom: "2rem",
+        }}
+      >
+        <h2>Welcome to the PCS Playbook</h2>
+
         <p className="muted">
-          Welcome to the PCS Playbook — explore Marine Corps installations,
-          view location information, and get organized before your move.
+          Explore Marine Corps installations, view location information, and get
+          organized before your move.
         </p>
       </div>
 
@@ -137,10 +142,7 @@ setSelectedBase(String(closestBase.installation_id));
             <option value="">Select an Installation</option>
 
             {installations.map((base) => (
-              <option
-                key={base.installation_id}
-                value={base.installation_id}
-              >
+              <option key={base.installation_id} value={base.installation_id}>
                 {base.installation_name} - {base.state}
               </option>
             ))}
@@ -155,45 +157,45 @@ setSelectedBase(String(closestBase.installation_id));
           <button onClick={goInstall}>Find Installation</button>
         </div>
 
-       {message && (
-  <div
-    style={{
-      marginTop: "18px",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "flex-start",
-      gap: "12px",
-    }}
-  >
-    <p
-      className="success"
-      style={{
-        margin: 0,
-      }}
-    >
-      {message}
-    </p>
+        {message && (
+          <div
+            style={{
+              marginTop: "18px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              gap: "12px",
+            }}
+          >
+            <p
+              className="success"
+              style={{
+                margin: 0,
+              }}
+            >
+              {message}
+            </p>
 
-    {selectedBase && (
-      <button
-        style={{
-          margin: 0,
-        }}
-        onClick={() => {
-          const base = installations.find(
-            (item) => String(item.installation_id) === selectedBase
-          );
+            {selectedBase && (
+              <button
+                style={{
+                  margin: 0,
+                }}
+                onClick={() => {
+                  const base = installations.find(
+                    (item) => String(item.installation_id) === selectedBase
+                  );
 
-          if (base) {
-            openDetail(base);
-          }
-        }}
-      >
-        View Installation
-      </button>
-    )}
-  </div>
-)}
+                  if (base) {
+                    openDetail(base);
+                  }
+                }}
+              >
+                View Installation
+              </button>
+            )}
+          </div>
+        )}
 
         <p className="small-muted">
           Select a base directly, or enter a ZIP code to find the closest
@@ -203,8 +205,15 @@ setSelectedBase(String(closestBase.installation_id));
 
       <InteractiveInstallationMap />
 
-      <div className="hero-actions">
-        <Link className="button secondary" to="/mentors">
+      <div
+        className="hero-actions"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "2rem",
+        }}
+      >
+        <Link className="button secondary" to="/mentor-request">
           Request Mentor Support
         </Link>
       </div>

@@ -109,15 +109,10 @@ function App() {
               </ProtectedRoute>
             }
           />
-
-          <Route
-            path="/mentor-request"
-            element={
-              <ProtectedRoute allowedRoles={['mentee']}>
-                <MentorRequest />
-              </ProtectedRoute>
-            }
-          />
+<Route
+  path="/mentor-request"
+  element={<MentorRequest />}
+/>
           <Route
   path="/admin/installations"
   element={

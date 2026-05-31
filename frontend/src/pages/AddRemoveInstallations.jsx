@@ -13,7 +13,6 @@ function AddRemoveInstallations() {
 
   const [form, setForm] = useState({
     installation_name: '',
-    slug: '',
     state: '',
     zip_code: '',
     address: '',
@@ -36,6 +35,14 @@ function AddRemoveInstallations() {
     setShowPopup(true);
   }
 
+  function generateSlug(value) {
+    return value
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
   async function loadInstallations() {
     try {
       const res = await api.get('/installations');
@@ -55,19 +62,19 @@ function AddRemoveInstallations() {
   }
 
   function handleImageSelect(file, fieldName, label) {
-  if (!file) return;
+    if (!file) return;
 
-  openPopup('Uploading Image', `Uploading ${label}...`);
+    openPopup('Uploading Image', `Uploading ${label}...`);
 
-  setTimeout(() => {
-    setForm((prev) => ({
-      ...prev,
-      [fieldName]: file
-    }));
+    setTimeout(() => {
+      setForm((prev) => ({
+        ...prev,
+        [fieldName]: file
+      }));
 
-    openPopup('Uploading Complete', `${label} uploaded successfully.`);
-  }, 800);
-}
+      openPopup('Upload Complete', `${label} selected successfully.`);
+    }, 800);
+  }
 
   async function uploadImage(file, fieldName) {
     if (!file) return '';
@@ -87,7 +94,7 @@ function AddRemoveInstallations() {
 
     try {
       setUploading(true);
-      openPopup('Saving Installation', 'Saving...');
+      openPopup('Saving Installation', 'Saving image...');
 
       const res = await api.post('/admin/upload', formData);
 
@@ -105,7 +112,6 @@ function AddRemoveInstallations() {
         return '';
       }
 
-      openPopup('Upload Success', 'Image uploaded successfully.');
       return imageUrl;
     } catch (error) {
       console.log(error);
@@ -121,7 +127,6 @@ function AddRemoveInstallations() {
 
     if (
       !form.installation_name.trim() ||
-      !form.slug.trim() ||
       !form.state.trim() ||
       !form.zip_code.trim() ||
       !form.address.trim() ||
@@ -152,9 +157,11 @@ function AddRemoveInstallations() {
       ? await uploadImage(form.base_map, 'base_map_url')
       : '';
 
+    const generatedSlug = generateSlug(form.installation_name);
+
     const finalForm = {
       installation_name: form.installation_name,
-      slug: form.slug,
+      slug: generatedSlug,
       state: form.state,
       zip_code: form.zip_code,
       address: form.address,
@@ -184,7 +191,6 @@ function AddRemoveInstallations() {
 
       setForm({
         installation_name: '',
-        slug: '',
         state: '',
         zip_code: '',
         address: '',
@@ -212,65 +218,44 @@ function AddRemoveInstallations() {
     }
   }
 
- async function removeInstallation() {
-  if (!selectedInstallation) {
-    openPopup(
-      'Missing Information',
-      'Please select an installation to remove.'
+  async function removeInstallation() {
+    if (!selectedInstallation) {
+      openPopup(
+        'Missing Information',
+        'Please select an installation to remove.'
+      );
+      return;
+    }
+
+    const installation = installations.find(
+      (i) =>
+        i.installation_id.toString() ===
+        selectedInstallation.toString()
     );
-    return;
+
+    const label = installation?.installation_name || 'Installation';
+
+    try {
+      openPopup('Removing Installation', `Removing ${label}...`);
+
+      setTimeout(async () => {
+        try {
+          await api.delete(`/installations/${selectedInstallation}`);
+
+          openPopup('Removal Complete', `${label} removed successfully.`);
+
+          setSelectedInstallation('');
+
+          loadInstallations();
+          loadRegions();
+        } catch {
+          openPopup('Action Failed', `Failed to remove ${label}.`);
+        }
+      }, 800);
+    } catch {
+      openPopup('Action Failed', `Failed to remove ${label}.`);
+    }
   }
-
-  const installation = installations.find(
-    (i) =>
-      i.installation_id.toString() ===
-      selectedInstallation.toString()
-  );
-
-  const label =
-    installation?.installation_name || 'Installation';
-
-  try {
-    openPopup(
-      'Removing Installation',
-      `Removing ${label}...`
-    );
-
-    setTimeout(async () => {
-      try {
-        await api.delete(
-          `/installations/${selectedInstallation}`
-        );
-
-        openPopup(
-          'Removal Complete',
-          `${label} removed successfully.`
-        );
-
-        setSelectedInstallation('');
-
-        loadInstallations();
-        loadRegions();
-
-      } catch {
-
-        openPopup(
-          'Action Failed',
-          `Failed to remove ${label}.`
-        );
-
-      }
-    }, 800);
-
-  } catch {
-
-    openPopup(
-      'Action Failed',
-      `Failed to remove ${label}.`
-    );
-
-  }
-}
 
   return (
     <section>
@@ -341,17 +326,6 @@ function AddRemoveInstallations() {
             }
           />
 
-          <input
-            placeholder="Slug example: camp-pendleton"
-            value={form.slug}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                slug: e.target.value
-              })
-            }
-          />
-
           <select
             value={form.state}
             onChange={(e) =>
@@ -363,9 +337,9 @@ function AddRemoveInstallations() {
           >
             <option value="">Select State / Region</option>
 
-            {regions.map((region) => (
+            {regions.map((region, index) => (
               <option
-                key={region.region_name}
+                key={`${region.region_name}-${index}`}
                 value={region.region_name}
               >
                 {region.region_name}
@@ -430,14 +404,38 @@ function AddRemoveInstallations() {
 
           <h4 className="section-title">Gate Image</h4>
 
-          <div className="admin-image-row">
-            <div className="input-group">
-              <label>Upload Gate Image</label>
+          <div
+            className="admin-image-row"
+            style={{
+              display: 'flex',
+              justifyContent: 'center'
+            }}
+          >
+            <div
+              className="input-group"
+              style={{
+                width: '100%',
+                maxWidth: '600px'
+              }}
+            >
+              <label
+                style={{
+                  display: 'block',
+                  textAlign: 'center',
+                  marginBottom: '.5rem'
+                }}
+              >
+                Upload Gate Image
+              </label>
 
               <input
                 disabled={uploading}
                 type="file"
                 accept="image/*"
+                style={{
+                  width: '100%',
+                  maxWidth: '600px'
+                }}
                 onChange={(e) =>
                   handleImageSelect(
                     e.target.files[0],
@@ -450,7 +448,14 @@ function AddRemoveInstallations() {
           </div>
 
           {form.gate_image && (
-            <div className="preview-container">
+            <div
+              className="preview-container"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginBottom: '2rem'
+              }}
+            >
               <img
                 src={URL.createObjectURL(form.gate_image)}
                 alt="Gate preview"
@@ -461,14 +466,38 @@ function AddRemoveInstallations() {
 
           <h4 className="section-title">Base Logo</h4>
 
-          <div className="admin-image-row">
-            <div className="input-group">
-              <label>Upload Base Logo</label>
+          <div
+            className="admin-image-row"
+            style={{
+              display: 'flex',
+              justifyContent: 'center'
+            }}
+          >
+            <div
+              className="input-group"
+              style={{
+                width: '100%',
+                maxWidth: '600px'
+              }}
+            >
+              <label
+                style={{
+                  display: 'block',
+                  textAlign: 'center',
+                  marginBottom: '.5rem'
+                }}
+              >
+                Upload Base Logo
+              </label>
 
               <input
                 disabled={uploading}
                 type="file"
                 accept="image/*"
+                style={{
+                  width: '100%',
+                  maxWidth: '600px'
+                }}
                 onChange={(e) =>
                   handleImageSelect(
                     e.target.files[0],
@@ -481,7 +510,14 @@ function AddRemoveInstallations() {
           </div>
 
           {form.base_logo && (
-            <div className="preview-container">
+            <div
+              className="preview-container"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginBottom: '2rem'
+              }}
+            >
               <img
                 src={URL.createObjectURL(form.base_logo)}
                 alt="Base logo preview"
@@ -492,14 +528,38 @@ function AddRemoveInstallations() {
 
           <h4 className="section-title">Base Map</h4>
 
-          <div className="admin-image-row">
-            <div className="input-group">
-              <label>Upload Base Map</label>
+          <div
+            className="admin-image-row"
+            style={{
+              display: 'flex',
+              justifyContent: 'center'
+            }}
+          >
+            <div
+              className="input-group"
+              style={{
+                width: '100%',
+                maxWidth: '600px'
+              }}
+            >
+              <label
+                style={{
+                  display: 'block',
+                  textAlign: 'center',
+                  marginBottom: '.5rem'
+                }}
+              >
+                Upload Base Map
+              </label>
 
               <input
                 disabled={uploading}
                 type="file"
                 accept="image/*"
+                style={{
+                  width: '100%',
+                  maxWidth: '600px'
+                }}
                 onChange={(e) =>
                   handleImageSelect(
                     e.target.files[0],
@@ -512,7 +572,14 @@ function AddRemoveInstallations() {
           </div>
 
           {form.base_map && (
-            <div className="preview-container">
+            <div
+              className="preview-container"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginBottom: '2rem'
+              }}
+            >
               <img
                 src={URL.createObjectURL(form.base_map)}
                 alt="Base map preview"

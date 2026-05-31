@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const pool = require('../config/db');
 
 exports.getAllUsers = async (req, res) => {
@@ -25,6 +26,84 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
+exports.updateUser = async (req, res) => {
+  try {
+    const {
+      first_name,
+      last_name,
+      email,
+      phone,
+      rank,
+      assigned_installation_id,
+      password
+    } = req.body;
+
+    if (password && password.trim() !== '') {
+
+      const hashedPassword =
+        await bcrypt.hash(password, 10);
+
+      await pool.query(
+        `UPDATE users
+         SET first_name = ?,
+             last_name = ?,
+             email = ?,
+             phone = ?,
+             rank = ?,
+             assigned_installation_id = ?,
+             password = ?
+         WHERE user_id = ?`,
+        [
+          first_name,
+          last_name,
+          email,
+          phone,
+          rank,
+          assigned_installation_id || null,
+          hashedPassword,
+          req.params.id
+        ]
+      );
+
+    } else {
+
+      await pool.query(
+        `UPDATE users
+         SET first_name = ?,
+             last_name = ?,
+             email = ?,
+             phone = ?,
+             rank = ?,
+             assigned_installation_id = ?
+         WHERE user_id = ?`,
+        [
+          first_name,
+          last_name,
+          email,
+          phone,
+          rank,
+          assigned_installation_id || null,
+          req.params.id
+        ]
+      );
+
+    }
+
+    res.json({
+      message: 'User updated successfully.'
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      message: 'Failed to update user.',
+      error: error.message
+    });
+
+  }
+};
 exports.updateUserRole = async (req, res) => {
   try {
 
