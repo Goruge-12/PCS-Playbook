@@ -1,39 +1,39 @@
 import { Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar.js';
+import Navbar from './components/Navbar.jsx';
 
-import Home from './pages/Home.js';
-import Login from './pages/Login.js';
-import Register from './pages/Register.js';
+import Home from './pages/Home.jsx';
+import Login from './pages/Login.jsx';
+import Register from './pages/Register.jsx';
 
-import Installations from './pages/Installations.js';
-import InstallationDetails from './pages/InstallationDetails.js';
+import Installations from './pages/Installations.jsx';
+import InstallationDetails from './pages/InstallationDetails.jsx';
 
-import Units from './pages/Units.js';
-import UnitDetails from './pages/UnitDetails.js';
+import Units from './pages/Units.jsx';
+import UnitDetails from './pages/UnitDetails.jsx';
 
-import Profile from './pages/Profile.js';
+import Profile from './pages/Profile.jsx';
 
-import MenteeDashboard from './pages/MenteeDashboard.js';
-import MentorRequest from './pages/MentorRequest.js';
-import MentorDashboard from './pages/MentorDashboard.js';
+import MenteeDashboard from './pages/MenteeDashboard.jsx';
+import MentorRequest from './pages/MentorRequest.jsx';
+import MentorDashboard from './pages/MentorDashboard.jsx';
 
-import AdminDashboard from './pages/AdminDashboard.js';
-import AdminUsers from './pages/AdminUsers.js';
+import AdminDashboard from './pages/AdminDashboard.jsx';
+import AdminUsers from './pages/AdminUsers.jsx';
 
-import Unauthorized from './pages/Unauthorized.js';
+import Unauthorized from './pages/Unauthorized.jsx';
 
-import ProtectedRoute from './components/ProtectedRoute.js';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 
-import AddRemoveInstallations from './pages/AddRemoveInstallations.js';
+import AddRemoveInstallations from './pages/AddRemoveInstallations.jsx';
 
-import AddRemoveUnits from './pages/AddRemoveUnits.js';
-import ModifyInstallations from './pages/ModifyInstallations.js';
-import ModifyUnits from './pages/ModifyUnits.js';
+import AddRemoveUnits from './pages/AddRemoveUnits.jsx';
+import ModifyInstallations from './pages/ModifyInstallations.jsx';
+import ModifyUnits from './pages/ModifyUnits.jsx';
 
-import ManageCityInfo from './pages/ManageCityInfo.js';
-import Resources from './pages/Resources.js';
-import ManageResources from './pages/ManageResources.js';
-import ChangePassword from './pages/ChangePassword.js';
+import ManageCityInfo from './pages/ManageCityInfo.jsx';
+import Resources from './pages/Resources.jsx';
+import ManageResources from './pages/ManageResources.jsx';
+import ChangePassword from './pages/ChangePassword.jsx';
 
 function App() {
   return (
