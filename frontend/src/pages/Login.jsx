@@ -44,10 +44,16 @@ function Login() {
       );
       window.dispatchEvent(new Event('profileUpdated'));
       if (Number(res.data.user.must_change_password) === 1) {
-        navigate('/change-password');
-      } else {
-        navigate('/installations');
-      }
+  navigate('/change-password');
+} else if (res.data.user.role === 'admin') {
+  navigate('/admin');
+} else if (res.data.user.role === 'mentor') {
+  navigate('/mentor-dashboard');
+} else if (res.data.user.role === 'mentee') {
+  navigate('/mentee-dashboard');
+} else {
+  navigate('/');
+}
     } catch (error) {
       setMessage(
         error.response?.data?.message ||
