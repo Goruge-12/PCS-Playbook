@@ -20,9 +20,13 @@ function Profile() {
 
   async function loadProfile() {
     const token = localStorage.getItem('token');
-    const res = await api.get('/users/profile');
 
-    setProfile(res.data);
+  const res = await api.get('/users/profile', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
 
     setForm({
       first_name: res.data.first_name || '',
