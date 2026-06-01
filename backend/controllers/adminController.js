@@ -4,18 +4,18 @@ const pool = require('../config/db');
 exports.getAllUsers = async (req, res) => {
   try {
     const [rows] = await pool.query(
-      `SELECT 
-        user_id,
-        first_name,
-        last_name,
-        email,
-        phone,
-        rank,
-        role,
-        assigned_installation_id
-       FROM users
-       ORDER BY last_name, first_name`
-    );
+  `SELECT
+    user_id,
+    first_name,
+    last_name,
+    email,
+    phone,
+    \`rank\`,
+    role,
+    assigned_installation_id
+   FROM users
+   ORDER BY last_name, first_name`
+);
 
     res.json(rows);
   } catch (error) {
@@ -49,7 +49,7 @@ exports.updateUser = async (req, res) => {
              last_name = ?,
              email = ?,
              phone = ?,
-             rank = ?,
+             \`rank\` = ?,
              assigned_installation_id = ?,
              password = ?
          WHERE user_id = ?`,
@@ -73,7 +73,7 @@ exports.updateUser = async (req, res) => {
              last_name = ?,
              email = ?,
              phone = ?,
-             rank = ?,
+             \`rank\` = ?,
              assigned_installation_id = ?
          WHERE user_id = ?`,
         [
