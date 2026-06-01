@@ -19,6 +19,7 @@ function Profile() {
   });
 
   async function loadProfile() {
+    const token = localStorage.getItem('token');
     const res = await api.get('/users/profile');
 
     setProfile(res.data);
