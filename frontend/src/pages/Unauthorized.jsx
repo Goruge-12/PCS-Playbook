@@ -1,3 +1,4 @@
+import React from 'react';
 function Unauthorized() {
   return (
     <section className="card">

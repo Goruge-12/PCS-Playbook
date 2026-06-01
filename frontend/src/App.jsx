@@ -1,3 +1,4 @@
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 
@@ -161,13 +162,6 @@ function App() {
 />
 
 <Route
-  path="/admin/resources"
-  element={
-    <ProtectedRoute allowedRoles={['admin']}>
-      <ManageResources />
-    </ProtectedRoute>
-  }
-/><Route
   path="/admin/resources"
   element={
     <ProtectedRoute allowedRoles={['admin']}>
