@@ -42,7 +42,7 @@ function Login() {
         'user',
         JSON.stringify(res.data.user)
       );
-
+      window.dispatchEvent(new Event('profileUpdated'));
       if (Number(res.data.user.must_change_password) === 1) {
         navigate('/change-password');
       } else {
