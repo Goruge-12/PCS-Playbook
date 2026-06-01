@@ -65,11 +65,42 @@ function MentorDashboard() {
     }
   }
 
-  const sortedRequests = [...requests].sort(
-    (a, b) =>
-      new Date(b.created_at) -
-      new Date(a.created_at)
-  );
+  function getStatusColor(status) {
+    if (status === 'closed') return '#c62828';
+    if (status === 'assigned') return '#0b3d91';
+    if (status === 'replied') return '#2e7d32';
+    return '#555';
+  }
+
+  function formatStatus(status) {
+    if (!status) return 'Pending';
+
+    return (
+      status.charAt(0).toUpperCase() +
+      status.slice(1)
+    );
+  }
+
+  const sortedRequests = [...requests]
+    .filter((request) => {
+      if (request.status !== 'closed') {
+        return true;
+      }
+
+      const closedDate = new Date(
+        request.updated_at || request.created_at
+      );
+
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+      return closedDate >= sevenDaysAgo;
+    })
+    .sort(
+      (a, b) =>
+        new Date(b.created_at) -
+        new Date(a.created_at)
+    );
 
   const totalPages =
     Math.ceil(sortedRequests.length / rowsPerPage) || 1;
@@ -122,7 +153,7 @@ function MentorDashboard() {
         )}
       </div>
 
-      {requests.length === 0 ? (
+      {sortedRequests.length === 0 ? (
         <div className="card">
           <p className="muted">
             No pending requests.
@@ -165,6 +196,7 @@ function MentorDashboard() {
                 <th>Date</th>
                 <th>Marine</th>
                 <th>Installation</th>
+                <th>Status</th>
                 <th>Topic</th>
                 <th>Action</th>
               </tr>
@@ -185,6 +217,17 @@ function MentorDashboard() {
 
                   <td>
                     {request.installation_name}
+                  </td>
+
+                  <td>
+                    <span
+                      style={{
+                        fontWeight: '600',
+                        color: getStatusColor(request.status)
+                      }}
+                    >
+                      {formatStatus(request.status)}
+                    </span>
                   </td>
 
                   <td>

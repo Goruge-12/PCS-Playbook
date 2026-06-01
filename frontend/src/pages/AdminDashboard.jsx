@@ -29,7 +29,7 @@ function AdminDashboard() {
   }, []);
 
   function formatStatus(status) {
-    if (!status) return '';
+    if (!status) return 'Pending';
 
     return (
       status.charAt(0).toUpperCase() +
@@ -41,7 +41,7 @@ function AdminDashboard() {
     if (status === 'closed') return '#c62828';
     if (status === 'assigned') return '#0b3d91';
     if (status === 'replied') return '#2e7d32';
-    return 'inherit';
+    return '#555';
   }
 
   async function updateStatus(id, status) {
@@ -63,6 +63,27 @@ function AdminDashboard() {
     setMessage('Mentor assigned successfully.');
     loadRequests();
   }
+
+  const visibleRequests = [...requests]
+    .filter((request) => {
+      if (request.status !== 'closed') {
+        return true;
+      }
+
+      const closedDate = new Date(
+        request.updated_at || request.created_at
+      );
+
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+      return closedDate >= sevenDaysAgo;
+    })
+    .sort(
+      (a, b) =>
+        new Date(b.created_at) -
+        new Date(a.created_at)
+    );
 
   return (
     <section>
@@ -101,8 +122,12 @@ function AdminDashboard() {
           </Link>
 
           <Link className="button" to="/admin/city-info">
-  Manage City Info
-</Link>
+            Manage City Info
+          </Link>
+
+          <Link className="button" to="/admin/resources">
+            Manage Resources
+          </Link>
         </div>
       </div>
 
@@ -131,109 +156,115 @@ function AdminDashboard() {
           </thead>
 
           <tbody>
-            {[...requests]
-              .sort(
-                (a, b) =>
-                  new Date(b.created_at) -
-                  new Date(a.created_at)
-              )
-              .map((request) => {
-                const matchingMentors = mentors.filter(
-                  (mentor) =>
-                    Number(mentor.installation_id) ===
-                    Number(request.installation_id)
-                );
+            {visibleRequests.map((request) => {
+              const matchingMentors = mentors.filter(
+                (mentor) =>
+                  Number(mentor.installation_id) ===
+                  Number(request.installation_id)
+              );
 
-                return (
-                  <tr key={request.request_id}>
-                    <td>
-                      {new Date(
-                        request.created_at
-                      ).toLocaleDateString()}
-                    </td>
+              return (
+                <tr key={request.request_id}>
+                  <td>
+                    {new Date(
+                      request.created_at
+                    ).toLocaleDateString()}
+                  </td>
 
-                    <td>{request.mentee_name}</td>
+                  <td>{request.mentee_name}</td>
 
-                    <td>{request.installation_name}</td>
+                  <td>{request.installation_name}</td>
 
-                    <td>
-                      <span
-                        style={{
-                          fontWeight: '600',
-                          color: getStatusColor(request.status)
-                        }}
-                      >
-                        {formatStatus(request.status)}
-                      </span>
-                    </td>
+                  <td>
+                    <span
+                      style={{
+                        fontWeight: '600',
+                        color: getStatusColor(request.status)
+                      }}
+                    >
+                      {formatStatus(request.status)}
+                    </span>
+                  </td>
 
-                    <td>{request.message}</td>
+                  <td>{request.message}</td>
 
-                    <td>
-                      <select
-                        value={
-                          selectedMentors[
-                            request.request_id
-                          ] || ''
-                        }
-                        onChange={(e) =>
-                          setSelectedMentors({
-                            ...selectedMentors,
-                            [request.request_id]:
-                              e.target.value
-                          })
-                        }
-                      >
-                        <option value="">
-                          Select Mentor
+                  <td>
+                    <select
+                      value={
+                        selectedMentors[
+                          request.request_id
+                        ] || ''
+                      }
+                      onChange={(e) =>
+                        setSelectedMentors({
+                          ...selectedMentors,
+                          [request.request_id]:
+                            e.target.value
+                        })
+                      }
+                    >
+                      <option value="">
+                        Select Mentor
+                      </option>
+
+                      {matchingMentors.map((mentor) => (
+                        <option
+                          key={mentor.user_id}
+                          value={mentor.user_id}
+                        >
+                          {mentor.first_name}{' '}
+                          {mentor.last_name}
                         </option>
+                      ))}
+                    </select>
 
-                        {matchingMentors.map((mentor) => (
-                          <option
-                            key={mentor.user_id}
-                            value={mentor.user_id}
-                          >
-                            {mentor.first_name}{' '}
-                            {mentor.last_name}
-                          </option>
-                        ))}
-                      </select>
+                    {matchingMentors.length === 0 && (
+                      <p className="muted">
+                        No mentors available
+                      </p>
+                    )}
+                  </td>
 
-                      {matchingMentors.length === 0 && (
-                        <p className="muted">
-                          No mentors available
-                        </p>
-                      )}
-                    </td>
+                  <td className="request-action">
+                    <button
+                      onClick={() =>
+                        assignMentor(
+                          request.request_id
+                        )
+                      }
+                    >
+                      Assign
+                    </button>
 
-                    <td className="request-action">
-                      <button
-                        onClick={() =>
-                          assignMentor(
-                            request.request_id
-                          )
-                        }
-                      >
-                        Assign
-                      </button>
-
-                      <button
-                        className="danger"
-                        onClick={() =>
-                          updateStatus(
-                            request.request_id,
-                            'closed'
-                          )
-                        }
-                      >
-                        Close
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
+                    <button
+                      className="danger"
+                      onClick={() =>
+                        updateStatus(
+                          request.request_id,
+                          'closed'
+                        )
+                      }
+                    >
+                      Close
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
+
+        {visibleRequests.length === 0 && (
+          <p
+            className="muted"
+            style={{
+              textAlign: 'center',
+              marginTop: '1rem'
+            }}
+          >
+            No active mentorship requests.
+          </p>
+        )}
       </div>
     </section>
   );

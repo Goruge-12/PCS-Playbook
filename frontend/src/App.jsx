@@ -31,6 +31,9 @@ import ModifyInstallations from './pages/ModifyInstallations.jsx';
 import ModifyUnits from './pages/ModifyUnits.jsx';
 
 import ManageCityInfo from './pages/ManageCityInfo.jsx';
+import Resources from './pages/Resources.jsx';
+import ManageResources from './pages/ManageResources.jsx';
+import ChangePassword from './pages/ChangePassword.jsx';
 
 function App() {
   return (
@@ -155,6 +158,30 @@ function App() {
       <ManageCityInfo />
     </ProtectedRoute>
   }
+/>
+
+<Route
+  path="/admin/resources"
+  element={
+    <ProtectedRoute allowedRoles={['admin']}>
+      <ManageResources />
+    </ProtectedRoute>
+  }
+/><Route
+  path="/admin/resources"
+  element={
+    <ProtectedRoute allowedRoles={['admin']}>
+      <ManageResources />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/resources"
+  element={<Resources />}
+/>
+<Route
+  path="/change-password"
+  element={<ChangePassword />}
 />
         </Routes>
       </main>

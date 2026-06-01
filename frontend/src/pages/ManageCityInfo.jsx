@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 
 function ManageCityInfo() {
+  const navigate = useNavigate();
   const [installations, setInstallations] = useState([]);
   const [selectedInstallation, setSelectedInstallation] = useState('');
   const [message, setMessage] = useState('');
@@ -306,13 +308,44 @@ function ManageCityInfo() {
         </div>
       )}
 
-      <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <h2>Manage City Info</h2>
+     <div
+  style={{
+    position: 'relative',
+    textAlign: 'center',
+    marginBottom: '2rem'
+  }}
+>
+  <button
+    type="button"
+    className="button"
+    onClick={() => window.history.back()}
+    style={{
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      width: 'fit-content'
+    }}
+  >
+    Go Back
+  </button>
 
-        <p className="muted">
-          Add city details, local information, and things to do for each installation.
-        </p>
-      </div>
+  <h2
+    style={{
+      margin: 0
+    }}
+  >
+    Manage City Info
+  </h2>
+
+  <p
+    className="muted"
+    style={{
+      marginTop: '1rem'
+    }}
+  >
+    Add city details, local information, and things to do for each installation.
+  </p>
+</div>
 
       <div className="card form-card wide">
         <div

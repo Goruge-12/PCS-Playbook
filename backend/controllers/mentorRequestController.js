@@ -4,7 +4,6 @@ const { sendEmail } = require('../utils/emailService.js');
 exports.createRequest = async (req, res) => {
   try {
     const { installation_id, message } = req.body;
-
     const mentee_user_id = req.user.user_id;
 
     const [users] = await pool.query(
@@ -38,8 +37,7 @@ exports.createRequest = async (req, res) => {
     const assignedMentor =
       mentors.length > 0 ? mentors[0] : null;
 
-    const status =
-      assignedMentorId ? 'assigned' : 'pending';
+    const status = assignedMentorId ? 'assigned' : 'pending';
 
     await pool.query(
       `INSERT INTO mentor_requests
@@ -91,7 +89,6 @@ exports.createRequest = async (req, res) => {
         ? 'Mentor request submitted and assigned.'
         : 'Mentor request submitted. Waiting for mentor assignment.'
     });
-
   } catch (error) {
     res.status(500).json({
       message: 'Server error.',
@@ -123,7 +120,6 @@ exports.getMyRequests = async (req, res) => {
     );
 
     res.json(rows);
-
   } catch (error) {
     res.status(500).json({
       message: 'Server error.',
@@ -155,13 +151,11 @@ exports.getMentorQueue = async (req, res) => {
        JOIN installations i
         ON mr.installation_id = i.installation_id
        WHERE mr.installation_id = ?
-       AND mr.status IN ('pending', 'assigned', 'replied')
        ORDER BY mr.created_at DESC`,
       [installation_id]
     );
 
     res.json(rows);
-
   } catch (error) {
     res.status(500).json({
       message: 'Server error.',
@@ -191,7 +185,6 @@ exports.replyToRequest = async (req, res) => {
     res.json({
       message: 'Reply saved successfully.'
     });
-
   } catch (error) {
     res.status(500).json({
       message: 'Server error.',
@@ -215,7 +208,6 @@ exports.getMessages = async (req, res) => {
     );
 
     res.json(rows);
-
   } catch (error) {
     res.status(500).json({
       message: 'Server error.',
@@ -295,7 +287,6 @@ exports.createMessage = async (req, res) => {
     res.status(201).json({
       message: 'Message sent successfully.'
     });
-
   } catch (error) {
     res.status(500).json({
       message: 'Server error.',

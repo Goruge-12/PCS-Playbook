@@ -74,34 +74,60 @@ function Profile() {
   }
 
   async function uploadImage(e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!image) {
-      setMessage('Please select an image.');
-      return;
-    }
-
-    try {
-      const formData = new FormData();
-      formData.append('image', image);
-
-      const res = await api.put(
-        '/users/profile/image',
-        formData
-      );
-
-      setMessage(
-        res.data.message ||
-          'Profile image updated successfully.'
-      );
-
-      setPreview('');
-      setImage(null);
-      loadProfile();
-    } catch {
-      setMessage('Failed to upload image.');
-    }
+  if (!image) {
+    setMessage('Please select an image.');
+    return;
   }
+
+  try {
+    const formData = new FormData();
+    formData.append('image', image);
+
+    const res = await api.put(
+      '/users/profile/image',
+      formData
+    );
+
+    setMessage(
+      res.data.message ||
+        'Profile image updated successfully.'
+    );
+
+    setPreview('');
+    setImage(null);
+
+    const profileRes = await api.get('/users/profile');
+
+    setProfile(profileRes.data);
+
+    const storedUser = JSON.parse(
+      localStorage.getItem('user') || '{}'
+    );
+
+    localStorage.setItem(
+      'user',
+      JSON.stringify({
+        ...storedUser,
+        first_name: profileRes.data.first_name,
+        last_name: profileRes.data.last_name,
+        email: profileRes.data.email,
+        phone: profileRes.data.phone,
+        rank: profileRes.data.rank,
+        role: profileRes.data.role,
+        assigned_installation_id:
+          profileRes.data.assigned_installation_id,
+        profile_image_url:
+          profileRes.data.profile_image_url
+      })
+    );
+
+    window.dispatchEvent(new Event('profileUpdated'));
+  } catch {
+    setMessage('Failed to upload image.');
+  }
+}
 
   const fieldStyle = {
     width: '100%',

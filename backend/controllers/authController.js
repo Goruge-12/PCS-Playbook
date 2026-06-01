@@ -1,6 +1,12 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const pool = require('../config/db');
+const { sendTemporaryPassword } = require('../utils/emailService');
+
+function generateTempPassword() {
+  return crypto.randomBytes(4).toString('hex');
+}
 
 exports.register = async (req, res) => {
   try {
@@ -116,13 +122,92 @@ exports.login = async (req, res) => {
         rank: user.rank,
         assigned_installation_id: user.assigned_installation_id,
         role: user.role,
-        profile_image_url: user.profile_image_url
+        profile_image_url: user.profile_image_url,
+        must_change_password: user.must_change_password
       }
     });
 
   } catch (error) {
     res.status(500).json({
       message: 'Server error.',
+      error: error.message
+    });
+  }
+};
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        message: 'Please enter your email address.'
+      });
+    }
+
+    const [users] = await pool.query(
+      'SELECT user_id, email FROM users WHERE email = ?',
+      [email]
+    );
+
+    if (users.length === 0) {
+      return res.status(404).json({
+        message: 'No account found with that email.'
+      });
+    }
+
+    const tempPassword = generateTempPassword();
+    const hashedTempPassword = await bcrypt.hash(tempPassword, 10);
+
+    await pool.query(
+      `UPDATE users
+       SET password = ?,
+           must_change_password = 1
+       WHERE email = ?`,
+      [hashedTempPassword, email]
+    );
+
+    await sendTemporaryPassword(email, tempPassword);
+
+    res.json({
+      message: 'A temporary password has been sent to your email.'
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to send temporary password.',
+      error: error.message
+    });
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  try {
+    const { newPassword } = req.body;
+
+    if (!newPassword || newPassword.length < 8) {
+      return res.status(400).json({
+        message: 'New password must be at least 8 characters.'
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await pool.query(
+      `UPDATE users
+       SET password = ?,
+           must_change_password = 0
+       WHERE user_id = ?`,
+      [hashedPassword, req.user.user_id]
+    );
+
+    res.json({
+      message: 'Password changed successfully.'
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to change password.',
       error: error.message
     });
   }

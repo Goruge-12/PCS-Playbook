@@ -19,6 +19,28 @@ async function sendEmail(to, subject, text) {
   });
 }
 
+async function sendTemporaryPassword(
+  email,
+  temporaryPassword
+) {
+  await transporter.sendMail({
+    from: `"PCS Playbook" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: 'PCS Playbook Password Reset',
+    text: `
+A temporary password has been generated for your PCS Playbook account.
+
+Temporary Password:
+${temporaryPassword}
+
+Log in using this password.
+
+For security purposes, you will be required to create a new password after signing in.
+    `
+  });
+}
+
 module.exports = {
-  sendEmail
+  sendEmail,
+  sendTemporaryPassword
 };

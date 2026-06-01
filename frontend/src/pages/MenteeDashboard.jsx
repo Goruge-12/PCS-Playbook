@@ -74,7 +74,7 @@ function MenteeDashboard() {
   }
 
   function formatStatus(status) {
-    if (!status) return '';
+    if (!status) return 'Pending';
 
     return (
       status.charAt(0).toUpperCase() +
@@ -82,11 +82,35 @@ function MenteeDashboard() {
     );
   }
 
-  const sortedRequests = [...requests].sort(
-    (a, b) =>
-      new Date(b.created_at) -
-      new Date(a.created_at)
-  );
+  function getStatusColor(status) {
+    if (status === 'closed') return '#c62828';
+    if (status === 'assigned') return '#0b3d91';
+    if (status === 'replied') return '#2e7d32';
+    return '#555';
+  }
+
+  const sortedRequests = [...requests]
+    .filter((request) => {
+      if (request.status !== 'closed') {
+        return true;
+      }
+
+      const closedDate = new Date(
+        request.updated_at || request.created_at
+      );
+
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(
+        sevenDaysAgo.getDate() - 7
+      );
+
+      return closedDate >= sevenDaysAgo;
+    })
+    .sort(
+      (a, b) =>
+        new Date(b.created_at) -
+        new Date(a.created_at)
+    );
 
   const showPagination = sortedRequests.length > 10;
 
@@ -117,10 +141,10 @@ function MenteeDashboard() {
         <h2>My Mentor Requests</h2>
       </div>
 
-      {requests.length === 0 ? (
+      {sortedRequests.length === 0 ? (
         <div className="card">
           <p className="muted">
-            You have not submitted any mentor requests yet.
+            You have not submitted any active mentor requests yet.
           </p>
         </div>
       ) : (
@@ -175,7 +199,16 @@ function MenteeDashboard() {
 
                   <td>{request.installation_name}</td>
 
-                  <td>{formatStatus(request.status)}</td>
+                  <td>
+                    <span
+                      style={{
+                        fontWeight: '600',
+                        color: getStatusColor(request.status)
+                      }}
+                    >
+                      {formatStatus(request.status)}
+                    </span>
+                  </td>
 
                   <td>{request.message}</td>
 
