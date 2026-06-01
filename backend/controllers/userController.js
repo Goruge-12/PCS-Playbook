@@ -4,21 +4,21 @@ const bcrypt = require('bcryptjs');
 
 exports.getProfile = async (req, res) => {
   try {
-    const [rows] = await pool.query(
-      `SELECT
-        user_id,
-        first_name,
-        last_name,
-        email,
-        phone,
-        role,
-        rank,
-        assigned_installation_id,
-        profile_image_url
-      FROM users
-      WHERE user_id = ?`,
-      [req.user.user_id]
-    );
+   const [rows] = await pool.query(
+  `SELECT
+    user_id,
+    first_name,
+    last_name,
+    email,
+    phone,
+    role,
+    \`rank\`,
+    assigned_installation_id,
+    profile_image_url
+  FROM users
+  WHERE user_id = ?`,
+  [req.user.user_id]
+);
 
     res.json(rows[0]);
   } catch (error) {
