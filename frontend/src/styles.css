@@ -764,10 +764,11 @@ footer {
 }
 
 .unit-tile-img {
+  display: block;
   width: 120px;
   height: 120px;
   object-fit: contain;
-  margin-bottom: 12px;
+  margin: 0 auto 12px auto;
 }
 
 .unit-tile h4 {
@@ -788,13 +789,6 @@ footer {
   font-size: 12px;
   color: #1e3a8a;
 }
-.unit-tile-img {
-  display: block;
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
-  margin: 0 auto 12px auto;
-}
 .unit-img-placeholder {
   display: none;
   width: 120px;
@@ -808,14 +802,6 @@ footer {
   color: #6b7280;
   font-size: 13px;
   text-align: center;
-}
-
-.unit-tile-img {
-  display: block;
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
-  margin: 0 auto 12px auto;
 }
 .command-img {
   width: 100%;
