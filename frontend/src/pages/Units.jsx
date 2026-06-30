@@ -77,7 +77,8 @@ function Units() {
           value={openInstallation}
           onChange={(e) => handleInstallationChange(e.target.value)}
           style={{
-            width: "100%"
+            width: "100%",
+            fontSize: "12px",
           }}
         >
           <option value="">Choose an Installation</option>
