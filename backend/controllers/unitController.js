@@ -100,7 +100,7 @@ exports.createUnit = async (req, res) => {
       ]
     );
 
-    res.json({
+    res.status(201).json({
       message: 'Unit added successfully.'
     });
   } catch (error) {
@@ -117,11 +117,15 @@ exports.deleteUnit = async (req, res) => {
   try {
     const { unitId } = req.params;
 
-    await pool.query(
+    const [result] = await pool.query(
       `DELETE FROM installation_units
        WHERE unit_id = ?`,
       [unitId]
     );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Unit not found.' });
+    }
 
     res.json({
       message: 'Unit removed successfully.'
