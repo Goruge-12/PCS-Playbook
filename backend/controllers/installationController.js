@@ -108,10 +108,10 @@ exports.updateInstallation = async (req, res) => {
       imageUrl = await uploadToS3(req.file, 'installation-images');
     }
 
-    await pool.query(
-      `UPDATE installations 
-       SET installation_name=?, slug=?, region_name=?, state=?, zip_code=?, address=?, latitude=?, longitude=?, 
-       map_top=?, map_left=?, base_entry_requirements=?, general_information=?, unit_contact_info=?, image_url=? 
+    const [result] = await pool.query(
+      `UPDATE installations
+       SET installation_name=?, slug=?, region_name=?, state=?, zip_code=?, address=?, latitude=?, longitude=?,
+       map_top=?, map_left=?, base_entry_requirements=?, general_information=?, unit_contact_info=?, image_url=?
        WHERE installation_id=?`,
       [
         data.installation_name,
@@ -132,6 +132,10 @@ exports.updateInstallation = async (req, res) => {
       ]
     );
 
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Installation not found.' });
+    }
+
     res.json({ message: 'Installation updated.' });
   } catch (error) {
     res.status(500).json({ message: 'Server error.', error: error.message });
@@ -140,10 +144,14 @@ exports.updateInstallation = async (req, res) => {
 
 exports.deleteInstallation = async (req, res) => {
   try {
-    await pool.query(
+    const [result] = await pool.query(
       'DELETE FROM installations WHERE installation_id = ?',
       [req.params.id]
     );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Installation not found.' });
+    }
 
     res.json({
       message: 'Installation removed successfully.'
